@@ -2,8 +2,6 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const admin = require('firebase-admin');
 const axios = require('axios');
-const cors = require('cors');
-const { corsOptionsDelegate } = require('../middleware/cors');
 const { createPassObject } = require('../services/googleWalletService');
 const { appleWallet } = require('../config');
 const { webServiceURL, passTypeIdentifier, authToken } = appleWallet;
@@ -11,11 +9,11 @@ const { webServiceURL, passTypeIdentifier, authToken } = appleWallet;
 if (!admin.apps.length) {
     admin.initializeApp();
 }
+
 const db = admin.firestore();
 const router = express.Router();
 
-router.use(cors(corsOptionsDelegate));
-
+// Middleware to require API key
 function requireApiKey(req, res, next) {
     const apiKey = req.header('x-api-key');
     if (!apiKey || apiKey !== process.env.EMAIL_API_KEY) {
@@ -26,7 +24,6 @@ function requireApiKey(req, res, next) {
 
 router.post(
     '/boothVisited',
-    cors(corsOptionsDelegate),
     requireApiKey,
     [
         body('code')
@@ -42,6 +39,7 @@ router.post(
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array() });
             }
+
             const { code, boothVisited } = req.body;
 
             // 2) Lookup ticket
@@ -50,6 +48,7 @@ router.post(
             if (!ticketSnap.exists) {
                 return res.status(404).json({ error: 'Ticket not found.' });
             }
+
             const { email, name, serial } = ticketSnap.data();
 
             // 3) Update ticket’s boothVisited
@@ -69,8 +68,8 @@ router.post(
             // 5) Update Google Wallet object (optional)
             await createPassObject(email, name, code, boothVisited);
 
+            // 6) Notify Apple push service
             const pushUrl = `${webServiceURL}/v1/push/${passTypeIdentifier}`;
-
             const pushResponse = await axios.post(
                 pushUrl,
                 { serialNumbers: [serial] },
@@ -82,16 +81,15 @@ router.post(
                     validateStatus: () => true
                 }
             );
+
             console.log('⬅️ Push status:', pushResponse.status, pushResponse.data);
 
             if (pushResponse.status < 200 || pushResponse.status >= 300) {
-                return res
-                    .status(502)
-                    .json({
-                        error: 'Failed to notify Apple push service',
-                        status: pushResponse.status,
-                        body: pushResponse.data
-                    });
+                return res.status(502).json({
+                    error: 'Failed to notify Apple push service',
+                    status: pushResponse.status,
+                    body: pushResponse.data
+                });
             }
 
             // 7) Success
