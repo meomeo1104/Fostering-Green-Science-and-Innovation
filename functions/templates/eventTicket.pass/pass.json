@@ -1,0 +1,83 @@
+{
+  "formatVersion": 1,
+  "passTypeIdentifier": "pass.vn.edu.vgu.careerfair.cfied25",
+  "serialNumber": "123456",
+  "teamIdentifier": "C2239MGQ69",
+  "organizationName": "VGU Career Services",
+  "description": "Entrance ticket for Career Fair and Industrial Exploration Day 2025",
+  "logoText": "CFIED 2025",
+  "eventTicket": {
+    "headerFields": [
+      {
+        "key": "doors-open",
+        "label": "Doors open",
+        "isRelative": true,
+        "dateStyle": "PKDateStyleShort",
+        "timeStyle": "PKDateStyleShort",
+        "value": "2025-05-14T08:00+07:00"
+      }
+    ],
+    "secondaryFields": [],
+    "auxiliaryFields": [
+      {
+        "key": "admission_level",
+        "label": "Admission Level",
+        "value": "General Admission",
+        "semantics": {
+          "admissionLevel": "General Admission",
+          "admissionLevelAbbreviation": "GA"
+        }
+      }
+    ],
+    "backFields": [
+      {
+        "key": "Event venue",
+        "label": "Event Venue",
+        "value": "Conventional Hall, VGU Campus"
+      },
+      {
+        "key": "facebook",
+        "label": "Facebook Fanpage",
+        "value": "https://www.facebook.com/VGU.CFIED",
+        "dataDetectorType": "PKDataDetectorTypeLink"
+      },
+      {
+        "key": "website",
+        "label": "Official Website",
+        "value": "https://careerfair.vgu.edu.vn",
+        "dataDetectorType": "PKDataDetectorTypeLink"
+      }
+    ]
+  },
+  "barcodes": [
+    {
+      "format": "PKBarcodeFormatQR",
+      "message": "TEST123",
+      "messageEncoding": "iso-8859-1"
+    }
+  ],
+  "backgroundColor": "rgb(1,63,32)",
+  "foregroundColor": "rgb(174,209,64)",
+  "labelColor": "rgb(227,234,152)",
+  "semantics": {
+    "silenceRequested": true,
+    "relevantDates": [
+      {
+        "startDate": "2025-05-14T08:30:00+07:00",
+        "endDate": "2025-05-14T13:30:00+07:00"
+      }
+    ],
+    "additionalTicketAttributes": "Use this ticket to identify yourself during the event.",
+    "eventType": "PKEventTypeConvention",
+    "eventName": "Career Fair and Industrial Exploration Day 2025",
+    "venueDoorsOpenDate": "2025-05-14T08:00:00+07:00",
+    "eventStartDate": "2025-05-14T08:30:00+07:00",
+    "eventEndDate": "2025-05-14T13:30:00+07:00",
+    "venueName": "Conventional Hall",
+    "venueLocation": {
+      "latitude": 11.0572,
+      "longitude": 106.6442
+    },
+    "entranceDescription": "The entrance is located at the main gate of VGU Campus (near the bridge). Show this ticket at the reception desk for more information."
+  }
+}
