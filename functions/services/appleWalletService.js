@@ -3,7 +3,7 @@ const path = require('path');
 const { PKPass } = require('passkit-generator');
 
 const { appleWallet } = require('../config');
-const { auth } = require('firebase-admin');
+
 const {
   wwdrPath,
   signerCertPath,
@@ -26,8 +26,8 @@ const certificates = {
 const baseProps = {
   teamIdentifier,
   passTypeIdentifier,
-  organizationName: "VGU Career Services",
-  description: "Entrance ticket for Career Fair and Industrial Exploration Day 2025",
+  organizationName: "Industrial Relations and Technology Transfer Center",
+  description: "Entrance ticket for Fostering Green Science and Innovation 2025",
   webServiceURL,
   authenticationToken: authToken,
 };
@@ -44,43 +44,41 @@ async function initTemplate() {
     { model: modelPath, certificates },
     baseProps
   );
-  console.log('✅ Apple Wallet template initialized.');
+  console.log('✅ Apple Wallet template initialized for FGSI 2025.');
 }
 
 /**
  * Generate a user-specific .pkpass buffer.
  *
- * @param {string} email     – user’s email (to derive serialNumber)
- * @param {string} fullName  – to display on the pass
- * @param {string} code      – QR code / barcode value
+ * @param {string} fullName  – attendee’s full name
+ * @param {string} studentId – attendee’s ID (also used for QR/barcode)
  * @returns {Buffer}         – raw .pkpass data
  */
-async function createPassForUser(email, fullName, code, booth_visited = 0) {
+async function createPassForUser(fullName, studentId) {
   if (!passTemplate) {
     throw new Error('Template not initialized! Call initTemplate() first.');
   }
 
-  const serialNumber = email.replace(/[^\w.-]/g, '_');
+  const serialNumber = studentId.replace(/[^\w.-]/g, '_');
 
-  const pass = await PKPass.from(
-    passTemplate,
-    {
-      serialNumber
-    }
-  );
-  pass.setBarcodes(code);
+  const pass = await PKPass.from(passTemplate, { serialNumber });
+
+  // Set barcode (QR)
+  pass.setBarcodes(studentId);
+
+  // Add text fields
   pass.secondaryFields.push(
     {
-      "key": "name",
-      "label": "Attendee",
-      "value": fullName,
-      "textAlignment": "PKTextAlignmentLeft"
+      key: "full_name",
+      label: "Name",
+      value: fullName,
+      textAlignment: "PKTextAlignmentLeft"
     },
     {
-      "key": "boothVisited",
-      "label": "Booth Visited",
-      "value": booth_visited,
-      "textAlignment": "PKTextAlignmentRight"
+      key: "student_id",
+      label: "ID",
+      value: studentId,
+      textAlignment: "PKTextAlignmentRight"
     }
   );
 
